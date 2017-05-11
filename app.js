@@ -1,3 +1,7 @@
+/*
+1) for POST routes, what is the URL we should use? (e.g. for creating a new day)
+
+*/
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
@@ -5,6 +9,7 @@ var morgan = require('morgan');
 var nunjucks = require('nunjucks');
 var db = require('./models');
 var router = require('./routes');
+const dayRouter = require('./routes/api/days.js');
 
 
 var app = express();
@@ -23,6 +28,8 @@ app.use(bodyParser.json());
 
 app.use(morgan('dev'))
 app.use(router);
+//also use dayRouter:
+app.use('/api/days', dayRouter);
 
 app.use(function(err, req, res, next) {
 	console.error(err)

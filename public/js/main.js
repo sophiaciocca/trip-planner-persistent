@@ -68,7 +68,10 @@ $(function initializeMap () {
   // 0. Fetch the database, parsed from json to a js object
   const db = fetch('/api').then(r => r.json())
 
-  // TODO: 
+  //when page loads, load all the days (count them and load that number of them)
+  // $.ajax('/api/days', {method: 'get'}).then(doSomethingWithIt) //(using the alt formatting just to switch it up)
+
+
   // 1. Populate the <select>s with <option>s
   $('select').each(
     (_index, select) => {

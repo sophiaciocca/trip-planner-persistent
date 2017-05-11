@@ -47,6 +47,13 @@ router.get('/api', (req, res, next) =>
 		.catch(next)
 )
 
+
+
+// //GET HOTELS ROUTE
+// router.get('/api/hotels', (req, res, next) => {
+// 	Hotel.findAll({ include: [Place] })
+// })
+
 // Use Fetch (built in browser API):
 //
 //   IDK, look it up on MDN?
