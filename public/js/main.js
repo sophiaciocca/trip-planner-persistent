@@ -67,9 +67,32 @@ $(function initializeMap () {
 
   // 0. Fetch the database, parsed from json to a js object
   const db = fetch('/api').then(r => r.json())
-
+  console.log("we got here")
   //when page loads, load all the days (count them and load that number of them)
-  // $.ajax('/api/days', {method: 'get'}).then(doSomethingWithIt) //(using the alt formatting just to switch it up)
+  $.ajax('/api/days', {method: 'get'})
+  .then(function(days) {
+    days.forEach(function(day, index) {
+      //$('button.addDay').click()   
+      // Add a new day
+      $('button.addDay').before(
+        $(`<ol class="current day"><h3><span class=day-head>Day ${index + 1}</span><button class=delDay>x</button></h3></ol>`)
+      )
+
+      //console.log("day.hotel is ", day.hotel)
+      //console.log("this is day ", day)
+      if (day.hotelId) {
+        let newLi = $(`<li>${day.hotel.name}</li>`)
+        newLi.appendTo($(`#${day.id}`))
+      }
+      
+      //$('.day[dataid = day.id]').append("hello")
+      //console.log("hopefully this gets the day with the day id we want: ", $( ".day" ).data( "dayid" ) === day.id)
+      //console.log("day.id is ", day.id)
+      
+      
+
+    })
+  }) //(using the alt formatting just to switch it up)
 
 
   // 1. Populate the <select>s with <option>s
@@ -111,6 +134,25 @@ $(function initializeMap () {
 
           // Add this item to our itinerary for the current day
           $('.current.day').append(li)
+
+          //if it's a hotel direct to a post route that can set the hotel on a day
+          // dayRouter.post('/:dayNum/hotels', (req, res, next) => {
+
+          // });
+          
+          //sometimes this is undefined
+          console.log("current day ", $('.current.day'))
+          let dayId = $('.current.day')[0].dataset.dayid;
+      
+          if (evt.target.dataset.from === '#hotels') {
+              $.ajax(`/api/days/${dayId}/hotels`, {
+                method: 'post',
+                data: {
+                  "hotelName": item.name,
+                  "dayId": dayId
+                }
+              });
+           }
         })
   )
 
@@ -128,12 +170,26 @@ $(function initializeMap () {
       // Deselect all days
       $('.day.current').removeClass('current')
       
-      // Add a new day
-      $(evt.target).before(
-        $(`<ol class="current day"><h3><span class=day-head></span><button class=delDay>x</button></h3></ol>`)
-      )
+       //posting the day to the database
 
-      numberDays()
+       
+      $.post('/api/days')
+      .then(function(day){
+        var dayid = day.id;
+        $(evt.target).before(
+        $(`<ol id="#${dayid}" class="current day" data-dayid =${dayid}><h3><span class=day-head></span><button class=delDay>x</button></h3></ol>`));
+        numberDays();
+      }).catch(next);
+
+      // Add a new day
+      
+
+      let dayNum = Number($('.current.day').find("span")[0].innerHTML.slice(4));
+      //posting the day to the database
+      $.post('/api/days')
+      .then(function(day){
+        console.log(day)
+      });
     }
   )
 
@@ -172,5 +228,5 @@ $(function initializeMap () {
     })
 
   // When we start, add a day
-  $('button.addDay').click()
+  //$('button.addDay').click()
 });
